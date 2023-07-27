@@ -135,39 +135,9 @@
       ref: "description",
     },
     {
-      type: "text",
-      label: "Serial Number",
-      ref: "serialNumber",
-    },
-    {
-      type: "text",
-      label: "Model Number",
-      ref: "modelNumber",
-    },
-    {
-      type: "text",
-      label: "Manufacturer",
-      ref: "manufacturer",
-    },
-    {
       type: "textarea",
       label: "Notes",
       ref: "notes",
-    },
-    {
-      type: "checkbox",
-      label: "Insured",
-      ref: "insured",
-    },
-    {
-      type: "checkbox",
-      label: "Archived",
-      ref: "archived",
-    },
-    {
-      type: "text",
-      label: "Asset ID",
-      ref: "assetId",
     },
   ];
 
@@ -187,44 +157,6 @@
       label: "Purchase Date",
       // @ts-expect-error - we know this is a date
       ref: "purchaseTime",
-    },
-  ];
-
-  const warrantyFields: FormField[] = [
-    {
-      type: "checkbox",
-      label: "Lifetime Warranty",
-      ref: "lifetimeWarranty",
-    },
-    {
-      type: "date",
-      label: "Warranty Expires",
-      // @ts-expect-error - we know this is a date
-      ref: "warrantyExpires",
-    },
-    {
-      type: "textarea",
-      label: "Warranty Notes",
-      ref: "warrantyDetails",
-    },
-  ];
-
-  const soldFields: FormField[] = [
-    {
-      type: "text",
-      label: "Sold To",
-      ref: "soldTo",
-    },
-    {
-      type: "text",
-      label: "Sold Price",
-      ref: "soldPrice",
-    },
-    {
-      type: "date",
-      label: "Sold At",
-      // @ts-expect-error - we know this is a date
-      ref: "soldTime",
     },
   ];
 
@@ -443,31 +375,29 @@
           </div>
         </BaseCard>
 
-        <div
-          v-if="preferences.editorAdvancedView"
-          ref="attDropZone"
-          class="overflow-visible card bg-base-100 shadow-xl sm:rounded-lg"
-        >
+        <div class="overflow-visible card bg-base-100 shadow-xl sm:rounded-lg">
           <div class="px-4 py-5 sm:px-6">
             <h3 class="text-lg font-medium leading-6">Attachments</h3>
             <p class="text-xs">Changes to attachments will be saved immediately</p>
           </div>
           <div class="border-t border-gray-300 p-4">
-            <div v-if="attDropZoneActive" class="grid grid-cols-4 gap-4">
-              <DropZone @drop="dropPhoto"> Photo </DropZone>
-              <DropZone @drop="dropWarranty"> Warranty </DropZone>
-              <DropZone @drop="dropManual"> Manual </DropZone>
-              <DropZone @drop="dropAttachment"> Attachment </DropZone>
-              <DropZone @drop="dropReceipt"> Receipt </DropZone>
+            <div class="grid grid-cols-5 gap-3 mb-3">
+              <NewDropZone @upload="(image: File) => uploadAttachment([image], AttachmentTypes.Photo)">
+                Photo
+              </NewDropZone>
+              <NewDropZone @upload="(image: File) => uploadAttachment([image], AttachmentTypes.Warranty)">
+                Warranty
+              </NewDropZone>
+              <NewDropZone @upload="(image: File) => uploadAttachment([image], AttachmentTypes.Manual)">
+                Manual
+              </NewDropZone>
+              <NewDropZone @upload="(image: File) => uploadAttachment([image], AttachmentTypes.Attachment)">
+                Attachment
+              </NewDropZone>
+              <NewDropZone @upload="(image: File) => uploadAttachment([image], AttachmentTypes.Receipt)">
+                Receipt
+              </NewDropZone>
             </div>
-            <button
-              v-else
-              class="h-24 w-full border-2 border-primary border-dashed grid place-content-center"
-              @click="clickUpload"
-            >
-              <input ref="refAttachmentInput" hidden type="file" @change="uploadImage" />
-              <p>Drag and drop files here or click to select files</p>
-            </button>
           </div>
 
           <div class="border-t border-gray-300 p-4">
@@ -500,7 +430,7 @@
           </div>
         </div>
 
-        <div v-if="preferences.editorAdvancedView" class="overflow-visible card bg-base-100 shadow-xl sm:rounded-lg">
+        <div class="overflow-visible card bg-base-100 shadow-xl sm:rounded-lg">
           <div class="px-4 py-5 sm:px-6">
             <h3 class="text-lg font-medium leading-6">Purchase Details</h3>
           </div>
@@ -511,86 +441,6 @@
               class="sm:divide-y sm:divide-gray-300 grid grid-cols-1"
             >
               <div class="pt-2 px-4 pb-4 sm:px-6 border-b border-gray-300">
-                <FormTextArea v-if="field.type === 'textarea'" v-model="item[field.ref]" :label="field.label" inline />
-                <FormTextField
-                  v-else-if="field.type === 'text'"
-                  v-model="item[field.ref]"
-                  :label="field.label"
-                  inline
-                />
-                <FormTextField
-                  v-else-if="field.type === 'number'"
-                  v-model.number="item[field.ref]"
-                  type="number"
-                  :label="field.label"
-                  inline
-                />
-                <FormDatePicker
-                  v-else-if="field.type === 'date'"
-                  v-model="item[field.ref]"
-                  :label="field.label"
-                  inline
-                />
-                <FormCheckbox
-                  v-else-if="field.type === 'checkbox'"
-                  v-model="item[field.ref]"
-                  :label="field.label"
-                  inline
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="preferences.editorAdvancedView" class="overflow-visible card bg-base-100 shadow-xl sm:rounded-lg">
-          <div class="px-4 py-5 sm:px-6">
-            <h3 class="text-lg font-medium leading-6">Warranty Details</h3>
-          </div>
-          <div class="border-t border-gray-300 sm:p-0">
-            <div
-              v-for="field in warrantyFields"
-              :key="field.ref"
-              class="sm:divide-y sm:divide-gray-300 grid grid-cols-1"
-            >
-              <div class="pt-2 px-4 pb-4 sm:px-6 border-b border-gray-300">
-                <FormTextArea v-if="field.type === 'textarea'" v-model="item[field.ref]" :label="field.label" inline />
-                <FormTextField
-                  v-else-if="field.type === 'text'"
-                  v-model="item[field.ref]"
-                  :label="field.label"
-                  inline
-                />
-                <FormTextField
-                  v-else-if="field.type === 'number'"
-                  v-model.number="item[field.ref]"
-                  type="number"
-                  :label="field.label"
-                  inline
-                />
-                <FormDatePicker
-                  v-else-if="field.type === 'date'"
-                  v-model="item[field.ref]"
-                  :label="field.label"
-                  inline
-                />
-                <FormCheckbox
-                  v-else-if="field.type === 'checkbox'"
-                  v-model="item[field.ref]"
-                  :label="field.label"
-                  inline
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="preferences.editorAdvancedView" class="overflow-visible card bg-base-100 shadow-xl sm:rounded-lg">
-          <div class="px-4 py-5 sm:px-6">
-            <h3 class="text-lg font-medium leading-6">Sold Details</h3>
-          </div>
-          <div class="border-t border-gray-300 sm:p-0">
-            <div v-for="field in soldFields" :key="field.ref" class="sm:divide-y sm:divide-gray-300 grid grid-cols-1">
-              <div class="pt-2 pb-4 px-4 sm:px-6 border-b border-gray-300">
                 <FormTextArea v-if="field.type === 'textarea'" v-model="item[field.ref]" :label="field.label" inline />
                 <FormTextField
                   v-else-if="field.type === 'text'"
