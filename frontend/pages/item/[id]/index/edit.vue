@@ -229,38 +229,6 @@
   ];
 
   // - Attachments
-  const attDropZone = ref<HTMLDivElement>();
-  const { isOverDropZone: attDropZoneActive } = useDropZone(attDropZone);
-
-  const refAttachmentInput = ref<HTMLInputElement>();
-
-  function clickUpload() {
-    if (!refAttachmentInput.value) {
-      return;
-    }
-    refAttachmentInput.value.click();
-  }
-
-  function uploadImage(e: Event) {
-    const files = (e.target as HTMLInputElement).files;
-    if (!files || !files.item(0)) {
-      return;
-    }
-
-    const first = files.item(0);
-    if (!first) {
-      return;
-    }
-
-    uploadAttachment([first], AttachmentTypes.Attachment);
-  }
-
-  const dropPhoto = (files: File[] | null) => uploadAttachment(files, AttachmentTypes.Photo);
-  const dropAttachment = (files: File[] | null) => uploadAttachment(files, AttachmentTypes.Attachment);
-  const dropWarranty = (files: File[] | null) => uploadAttachment(files, AttachmentTypes.Warranty);
-  const dropManual = (files: File[] | null) => uploadAttachment(files, AttachmentTypes.Manual);
-  const dropReceipt = (files: File[] | null) => uploadAttachment(files, AttachmentTypes.Receipt);
-
   async function uploadAttachment(files: File[] | null, type: AttachmentTypes) {
     if (!files || files.length === 0) {
       return;
