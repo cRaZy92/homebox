@@ -123,23 +123,6 @@
     );
   });
 
-  const assetID = computed<Details>(() => {
-    if (!item.value) {
-      return [];
-    }
-
-    if (item.value?.assetId === "000-000") {
-      return [];
-    }
-
-    return [
-      {
-        name: "Asset ID",
-        text: item.value?.assetId,
-      },
-    ];
-  });
-
   const itemDetails = computed<Details>(() => {
     if (!item.value) {
       return [];
@@ -157,30 +140,10 @@
         slot: "quantity",
       },
       {
-        name: "Serial Number",
-        text: item.value?.serialNumber,
-        copyable: true,
-      },
-      {
-        name: "Model Number",
-        text: item.value?.modelNumber,
-        copyable: true,
-      },
-      {
-        name: "Manufacturer",
-        text: item.value?.manufacturer,
-        copyable: true,
-      },
-      {
-        name: "Insured",
-        text: item.value?.insured ? "Yes" : "No",
-      },
-      {
         name: "Notes",
         type: "markdown",
         text: item.value?.notes,
       },
-      ...assetID.value,
       ...item.value.fields.map(field => {
         /**
          * Support Special URL Syntax
@@ -252,48 +215,6 @@
     return details;
   });
 
-  const showWarranty = computed(() => {
-    if (preferences.value.showEmpty) {
-      return true;
-    }
-    return validDate(item.value?.warrantyExpires);
-  });
-
-  const warrantyDetails = computed(() => {
-    const details: Details = [
-      {
-        name: "Lifetime Warranty",
-        text: item.value?.lifetimeWarranty ? "Yes" : "No",
-      },
-    ];
-
-    if (item.value?.lifetimeWarranty) {
-      details.push({
-        name: "Warranty Expires",
-        text: "N/A",
-      });
-    } else {
-      details.push({
-        name: "Warranty Expires",
-        text: item.value?.warrantyExpires || "",
-        type: "date",
-        date: true,
-      });
-    }
-
-    details.push({
-      name: "Warranty Details",
-      type: "markdown",
-      text: item.value?.warrantyDetails || "",
-    });
-
-    if (!preferences.value.showEmpty) {
-      return filterZeroValues(details);
-    }
-
-    return details;
-  });
-
   const showPurchase = computed(() => {
     if (preferences.value.showEmpty) {
       return true;
@@ -315,39 +236,6 @@
       {
         name: "Purchase Date",
         text: item.value?.purchaseTime || "",
-        type: "date",
-        date: true,
-      },
-    ];
-
-    if (!preferences.value.showEmpty) {
-      return filterZeroValues(v);
-    }
-
-    return v;
-  });
-
-  const showSold = computed(() => {
-    if (preferences.value.showEmpty) {
-      return true;
-    }
-    return item.value?.soldTo || item.value?.soldPrice !== "0";
-  });
-
-  const soldDetails = computed<Details>(() => {
-    const v: Details = [
-      {
-        name: "Sold To",
-        text: item.value?.soldTo || "",
-      },
-      {
-        name: "Sold Price",
-        text: item.value?.soldPrice || "",
-        type: "currency",
-      },
-      {
-        name: "Sold At",
-        text: item.value?.soldTime || "",
         type: "date",
         date: true,
       },
@@ -409,11 +297,6 @@
         to: `/item/${itemId.value}`,
       },
       {
-        id: "log",
-        name: "Maintenance",
-        to: `/item/${itemId.value}/maintenance`,
-      },
-      {
         id: "edit",
         name: "Edit",
         to: `/item/${itemId.value}/edit`,
@@ -436,16 +319,14 @@
           </button>
         </div>
 
-        <img class="max-w-[80vw] max-h-[80vh]" :src="dialoged.src" />
+        <img class="max-w-[80vw] max-h-[80vh]" :src="dialoged.src" alt="dialog" />
       </div>
     </dialog>
 
     <section>
       <BaseSectionHeader>
         <Icon name="mdi-package-variant" class="mr-2 -mt-1 text-base-content" />
-        <span class="text-base-content">
-          {{ item ? item.name : "" }}
-        </span>
+        <span class="text-base-content"> {{ item ? item.name : "" }}</span>
 
         <div v-if="item.parent" class="text-sm breadcrumbs pb-0">
           <ul class="text-base-content/70">
@@ -456,6 +337,7 @@
           </ul>
         </div>
         <template #description>
+          <div class="mb-2 font-semibold">Asset ID: {{ item.assetId }}</div>
           <Markdown :source="item.description"> </Markdown>
           <div class="flex flex-wrap gap-2 mt-3">
             <NuxtLink v-if="item.location" ref="badge" class="badge p-3" :to="`/location/${item.location.id}`">
@@ -525,7 +407,7 @@
               class="container border-t border-gray-300 p-4 flex flex-wrap gap-2 mx-auto max-h-[500px] overflow-y-scroll scroll-bg"
             >
               <button v-for="(img, i) in photos" :key="i" @click="openDialog(img)">
-                <img class="rounded max-h-[200px]" :src="img.src" />
+                <img class="rounded max-h-[200px]" :src="img.src" alt="item-image" />
               </button>
             </div>
           </BaseCard>
@@ -570,16 +452,6 @@
           <BaseCard v-if="showPurchase" collapsable>
             <template #title> Purchase Details </template>
             <DetailsSection :details="purchaseDetails" />
-          </BaseCard>
-
-          <BaseCard v-if="showWarranty" collapsable>
-            <template #title> Warranty Details </template>
-            <DetailsSection :details="warrantyDetails" />
-          </BaseCard>
-
-          <BaseCard v-if="showSold" collapsable>
-            <template #title> Sold Details </template>
-            <DetailsSection :details="soldDetails" />
           </BaseCard>
         </template>
       </div>
