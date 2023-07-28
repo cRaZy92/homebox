@@ -259,6 +259,8 @@ func (svc *ItemService) CsvImport(ctx context.Context, GID uuid.UUID, data io.Re
 				AssetID:     effAID,
 				LocationID:  locationID,
 				LabelIDs:    labelIds,
+				Quantity:    row.Quantity,
+				PurchasePrice: row.PurchasePrice,
 			}
 
 			item, err = svc.repo.Items.Create(ctx, GID, newItem)

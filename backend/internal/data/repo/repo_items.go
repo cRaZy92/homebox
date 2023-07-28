@@ -63,6 +63,9 @@ type (
 		// Edges
 		LocationID uuid.UUID   `json:"locationId"`
 		LabelIDs   []uuid.UUID `json:"labelIds"`
+
+		Quantity    int       `json:"quantity"`
+		PurchasePrice float64    `json:"purchasePrice,string"`
 	}
 
 	ItemUpdate struct {
@@ -534,7 +537,9 @@ func (e *ItemsRepository) Create(ctx context.Context, gid uuid.UUID, data ItemCr
 		SetDescription(data.Description).
 		SetGroupID(gid).
 		SetLocationID(data.LocationID).
-		SetAssetID(int(data.AssetID))
+		SetAssetID(int(data.AssetID)).
+		SetQuantity(data.Quantity).
+		SetPurchasePrice(data.PurchasePrice)
 
 	if data.LabelIDs != nil && len(data.LabelIDs) > 0 {
 		q.AddLabelIDs(data.LabelIDs...)

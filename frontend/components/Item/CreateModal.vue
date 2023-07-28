@@ -6,6 +6,8 @@
       <FormTextField ref="nameInput" v-model="form.name" :trigger-focus="focused" :autofocus="true" label="Item Name" />
       <FormTextArea v-model="form.description" label="Item Description" />
       <FormMultiselect v-model="form.labels" label="Labels" :items="labels ?? []" />
+      <FormTextField v-model="form.quantity" :trigger-focus="focused" label="Quantity" />
+      <FormTextField v-model="form.purchasePrice" :trigger-focus="focused" label="Purchase price" />
       <div class="modal-action">
         <div class="flex justify-center">
           <BaseButton class="rounded-r-none" :loading="loading" type="submit">
@@ -82,6 +84,8 @@
     description: "",
     color: "", // Future!
     labels: [] as LabelOut[],
+    quantity: "1",
+    purchasePrice: "0",
   });
 
   const { shift } = useMagicKeys();
@@ -119,6 +123,8 @@
       description: form.description,
       locationId: form.location.id as string,
       labelIds: form.labels.map(l => l.id) as string[],
+      quantity: parseInt(form.quantity),
+      purchasePrice: form.purchasePrice,
     };
 
     const { error, data } = await api.items.create(out);

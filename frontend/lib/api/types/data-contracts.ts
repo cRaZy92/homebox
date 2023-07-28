@@ -65,6 +65,8 @@ export interface ItemCreate {
    */
   name: string;
   parentId?: string | null;
+  quantity: number;
+  purchasePrice?: string | null;
 }
 
 export interface ItemField {
