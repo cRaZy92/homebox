@@ -39,7 +39,7 @@
 <template>
   <div
     ref="el"
-    class="h-24 w-full border-2 border-primary border-dashed grid place-content-center"
+    class="h-24 hover:bg-primary hover:bg-opacity-10 cursor-pointer w-full border-2 border-primary border-dashed grid place-content-center"
     :class="isOverDropZone ? 'bg-primary bg-opacity-10' : ''"
     @click="clickUpload"
   >
