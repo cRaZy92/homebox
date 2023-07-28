@@ -30,6 +30,19 @@ docker run -d \
 # ghcr.io/hay-kot/homebox:latest-rootless
 ```
 
+#### How to update deployed version
+```bash
+#remove old container
+docker remove {container ID}
+
+# Rebuild image from project root folder
+docker build -t my-homebox .
+
+# run container with new image
+docker run -d --name homebox --restart unless-stopped --publish 50050:7745 --env TZ=Europe/Bratislava --volume /home/homebox/data/:/data my-homebox
+```
+
+
 ## Credits
 
 - Logo by [@lakotelman](https://github.com/lakotelman)
