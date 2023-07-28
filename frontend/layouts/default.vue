@@ -13,7 +13,7 @@
     <div class="drawer drawer-mobile">
       <input id="my-drawer-2" v-model="drawerToggle" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content justify-center bg-base-300 pt-20 lg:pt-0">
-        <AppHeaderDecor class="-mt-10 hidden lg:block" />
+        <AppHeaderDecor class="-mt-32 hidden lg:block" />
         <!-- Button -->
         <div class="navbar z-[99] lg:hidden top-0 fixed bg-primary shadow-md drawer-button">
           <label for="my-drawer-2" class="btn btn-square btn-ghost text-base-100 drawer-button lg:hidden">
