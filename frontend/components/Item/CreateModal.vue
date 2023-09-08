@@ -1,22 +1,16 @@
 <template>
   <BaseModal v-model="modal">
     <template #title> Create Item </template>
-    <form @submit.prevent="create(true)">
+    <form @submit.prevent="create()">
       <LocationSelector v-model="form.location" />
-      <FormTextField
-        ref="locationNameRef"
-        v-model="form.name"
-        :trigger-focus="focused"
-        :autofocus="true"
-        label="Item Name"
-      />
+      <FormTextField ref="nameInput" v-model="form.name" :trigger-focus="focused" :autofocus="true" label="Item Name" />
       <FormTextArea v-model="form.description" label="Item Description" />
       <FormMultiselect v-model="form.labels" label="Labels" :items="labels ?? []" />
       <FormTextField v-model="form.quantity" :trigger-focus="focused" label="Quantity" />
       <FormTextField v-model="form.purchasePrice" :trigger-focus="focused" label="Purchase price" />
       <div class="modal-action">
         <div class="flex justify-center">
-          <BaseButton ref="submitBtn" type="submit" class="rounded-r-none" :loading="loading">
+          <BaseButton class="rounded-r-none" :loading="loading" type="submit">
             <template #icon>
               <Icon name="mdi-package-variant" class="swap-off h-5 w-5" />
               <Icon name="mdi-package-variant-closed" class="swap-on h-5 w-5" />
@@ -27,13 +21,18 @@
             <label tabindex="0" class="btn rounded-l-none rounded-r-xl">
               <Icon class="h-5 w-5" name="mdi-chevron-down" />
             </label>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-64">
-              <li><button @click.prevent="create(false)">Create and Add Another</button></li>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-64 right-0">
+              <li>
+                <button type="button" @click="create(false)">Create and Add Another</button>
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </form>
+    <p class="text-sm text-center mt-4">
+      use <kbd class="kbd kbd-xs">Shift</kbd> + <kbd class="kbd kbd-xs"> Enter </kbd> to create and add another
+    </p>
   </BaseModal>
 </template>
 
@@ -48,6 +47,15 @@
       required: true,
     },
   });
+
+  const api = useUserApi();
+  const toast = useNotifier();
+
+  const locationsStore = useLocationStore();
+  const locations = computed(() => locationsStore.allLocations);
+
+  const labelStore = useLabelStore();
+  const labels = computed(() => labelStore.labels);
 
   const route = useRoute();
 
@@ -65,16 +73,7 @@
     return null;
   });
 
-  const api = useUserApi();
-  const toast = useNotifier();
-
-  const locationsStore = useLocationStore();
-  const locations = computed(() => locationsStore.allLocations);
-
-  const labelStore = useLabelStore();
-  const labels = computed(() => labelStore.labels);
-
-  const submitBtn = ref(null);
+  const nameInput = ref<HTMLInputElement | null>(null);
 
   const modal = useVModel(props, "modelValue");
   const loading = ref(false);
@@ -88,6 +87,8 @@
     quantity: "1",
     purchasePrice: "0",
   });
+
+  const { shift } = useMagicKeys();
 
   whenever(
     () => modal.value,
@@ -107,9 +108,13 @@
     }
   );
 
-  async function create(close = false) {
+  async function create(close = true) {
     if (!form.location) {
       return;
+    }
+
+    if (shift.value) {
+      close = false;
     }
 
     const out: ItemCreate = {

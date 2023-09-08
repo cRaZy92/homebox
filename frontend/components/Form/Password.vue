@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <FormTextField v-model="value" placeholder="Password" label="Password" :type="inputType"> </FormTextField>
+    <FormTextField v-model="value" placeholder="Password" :label="label" :type="inputType"> </FormTextField>
     <button
       type="button"
       class="inline-flex p-1 ml-1 justify-center mt-auto mb-3 tooltip absolute top-11 right-3"
@@ -15,7 +15,7 @@
 <script setup lang="ts">
   type Props = {
     modelValue: string;
-    placeholder: string;
+    placeholder?: string;
     label: string;
   };
 

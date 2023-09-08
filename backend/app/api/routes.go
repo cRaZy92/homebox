@@ -51,6 +51,7 @@ func (a *app) mountRoutes(r *chi.Mux, chain *errchain.ErrChain, repos *repo.AllR
 	v1Ctrl := v1.NewControllerV1(
 		a.services,
 		a.repos,
+    a.bus,
 		v1.WithMaxUploadSize(a.conf.Web.MaxUploadSize),
 		v1.WithRegistration(a.conf.Options.AllowRegistration),
 		v1.WithDemoStatus(a.conf.Demo), // Disable Password Change in Demo Mode
@@ -70,6 +71,7 @@ func (a *app) mountRoutes(r *chi.Mux, chain *errchain.ErrChain, repos *repo.AllR
 		a.mwRoles(RoleModeOr, authroles.RoleUser.String()),
 	}
 
+	r.Get(v1Base("/ws/events"), chain.ToHandlerFunc(v1Ctrl.HandleCacheWS(), userMW...))
 	r.Get(v1Base("/users/self"), chain.ToHandlerFunc(v1Ctrl.HandleUserSelf(), userMW...))
 	r.Put(v1Base("/users/self"), chain.ToHandlerFunc(v1Ctrl.HandleUserSelfUpdate(), userMW...))
 	r.Delete(v1Base("/users/self"), chain.ToHandlerFunc(v1Ctrl.HandleUserSelfDelete(), userMW...))
@@ -125,7 +127,7 @@ func (a *app) mountRoutes(r *chi.Mux, chain *errchain.ErrChain, repos *repo.AllR
 	r.Put(v1Base("/items/{id}/maintenance/{entry_id}"), chain.ToHandlerFunc(v1Ctrl.HandleMaintenanceEntryUpdate(), userMW...))
 	r.Delete(v1Base("/items/{id}/maintenance/{entry_id}"), chain.ToHandlerFunc(v1Ctrl.HandleMaintenanceEntryDelete(), userMW...))
 
-	r.Get(v1Base("/asset/{id}"), chain.ToHandlerFunc(v1Ctrl.HandleAssetGet(), userMW...))
+	r.Get(v1Base("/assets/{id}"), chain.ToHandlerFunc(v1Ctrl.HandleAssetGet(), userMW...))
 
 	// Notifiers
 	r.Get(v1Base("/notifiers"), chain.ToHandlerFunc(v1Ctrl.HandleGetUserNotifiers(), userMW...))
@@ -153,7 +155,6 @@ func (a *app) mountRoutes(r *chi.Mux, chain *errchain.ErrChain, repos *repo.AllR
 	r.Get(v1Base("/reporting/bill-of-materials"), chain.ToHandlerFunc(v1Ctrl.HandleBillOfMaterialsExport(), userMW...))
 
 	r.NotFound(chain.ToHandlerFunc(notFoundHandler()))
-
 }
 
 func registerMimes() {
