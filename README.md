@@ -39,7 +39,7 @@ docker remove {container ID}
 docker build -t my-homebox .
 
 # run container with new image
-docker run -d --name homebox --restart unless-stopped --publish 50050:7745 --env TZ=Europe/Bratislava --volume /home/homebox/data/:/data my-homebox
+docker run -d --name homebox --restart unless-stopped --publish 50050:7745 --env TZ=Europe/Bratislava --volume /home/adamko/homebox-data/:/data my-homebox
 ```
 
 
