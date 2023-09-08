@@ -240,6 +240,7 @@
 
     total.value = data.total;
     items.value = data.items;
+    console.log(items.value);
 
     loading.value = false;
     initialSearch.value = false;

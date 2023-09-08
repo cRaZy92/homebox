@@ -53,7 +53,7 @@ export class AttachmentsAPI extends BaseAPI {
 
 export class FieldsAPI extends BaseAPI {
   getAll() {
-    return this.http.get<string[]>({ url: route("/items/fields") });
+    return this.http.get<string[]>({ url: route("/items/fields?fields=attachments") });
   }
 
   getAllValues(field: string) {
@@ -103,6 +103,7 @@ export class ItemsApi extends BaseAPI {
   }
 
   getAll(q: ItemsQuery = {}) {
+    console.log(q);
     return this.http.get<PaginationResult<ItemSummary>>({ url: route("/items", q) });
   }
 

@@ -62,8 +62,8 @@ type (
 		LocationID uuid.UUID   `json:"locationId"`
 		LabelIDs   []uuid.UUID `json:"labelIds"`
 
-		Quantity    int       `json:"quantity"`
-		PurchasePrice float64    `json:"purchasePrice,string"`
+		Quantity      int     `json:"quantity"`
+		PurchasePrice float64 `json:"purchasePrice,string"`
 	}
 
 	ItemUpdate struct {
@@ -126,8 +126,9 @@ type (
 		PurchasePrice float64 `json:"purchasePrice,string"`
 
 		// Edges
-		Location *LocationSummary `json:"location,omitempty" extensions:"x-nullable,x-omitempty"`
-		Labels   []LabelSummary   `json:"labels"`
+		Location    *LocationSummary `json:"location,omitempty" extensions:"x-nullable,x-omitempty"`
+		Labels      []LabelSummary   `json:"labels"`
+		Attachments []ItemAttachment `json:"attachments"`
 	}
 
 	ItemOut struct {
@@ -177,6 +178,11 @@ func mapItemSummary(item *ent.Item) ItemSummary {
 		labels = mapEach(item.Edges.Label, mapLabelSummary)
 	}
 
+	attachments := make([]ItemAttachment, len(item.Edges.Attachments))
+	if item.Edges.Attachments != nil {
+		attachments = mapEach(item.Edges.Attachments, ToItemAttachment)
+	}
+
 	return ItemSummary{
 		ID:            item.ID,
 		Name:          item.Name,
@@ -189,8 +195,9 @@ func mapItemSummary(item *ent.Item) ItemSummary {
 		PurchasePrice: item.PurchasePrice,
 
 		// Edges
-		Location: location,
-		Labels:   labels,
+		Location:    location,
+		Labels:      labels,
+		Attachments: attachments,
 
 		// Warranty
 		Insured: item.Insured,
@@ -410,7 +417,10 @@ func (e *ItemsRepository) QueryByGroup(ctx context.Context, gid uuid.UUID, q Ite
 
 	qb = qb.
 		WithLabel().
-		WithLocation()
+		WithLocation().
+		WithAttachments(func(aq *ent.AttachmentQuery) {
+			aq.WithDocument()
+		})
 
 	if q.Page != -1 || q.PageSize != -1 {
 		qb = qb.

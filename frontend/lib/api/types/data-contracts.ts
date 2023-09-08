@@ -135,6 +135,7 @@ export interface ItemSummary {
   purchasePrice: string;
   quantity: number;
   updatedAt: Date | string;
+  attachments: ItemAttachment[];
 }
 
 export interface ItemUpdate {

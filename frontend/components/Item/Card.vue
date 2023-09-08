@@ -30,12 +30,14 @@
       <div class="flex gap-2 flex-wrap -mr-1 mt-auto justify-end">
         <LabelChip v-for="label in top3" :key="label.id" :label="label" size="sm" />
       </div>
+      <img v-if="itemImage" :src="itemImage" alt="item-image" />
     </div>
   </NuxtLink>
 </template>
 
 <script setup lang="ts">
   import { ItemOut, ItemSummary } from "~~/lib/api/types/data-contracts";
+  import { AttachmentTypes } from "~/lib/api/types/non-generated";
 
   const top3 = computed(() => {
     return props.item.labels.slice(0, 3) || [];
@@ -46,6 +48,18 @@
       type: Object as () => ItemOut | ItemSummary,
       required: true,
     },
+  });
+
+  const api = useUserApi();
+
+  function attachmentURL(attachmentId: string) {
+    return api.authURL(`/items/${props.item.id}/attachments/${attachmentId}`);
+  }
+
+  const itemImage = computed(() => {
+    const image = props.item.attachments.find(att => att.type === AttachmentTypes.Photo);
+    if (!image) return undefined;
+    return attachmentURL(image.id);
   });
 </script>
 
