@@ -64,19 +64,19 @@ export function fmtDate(value: string | Date, fmt: DateTimeFormat = "human", fmt
 
   if (fmtType === "date") {
     // Offset local time
-    dt.setHours(dt.getHours() + dt.getTimezoneOffset() / 60);
+    // dt.setHours(dt.getHours() + dt.getTimezoneOffset() / 60); // no idea why it causes wrong offset
   }
 
   switch (fmt) {
     case "relative":
-      return useTimeAgo(dt).value + useDateFormat(dt, " (YYYY-MM-DD)").value;
+      return useTimeAgo(dt).value + useDateFormat(dt, " (DD. MM. YYYY)").value;
     case "long":
-      return useDateFormat(dt, "YYYY-MM-DD (dddd)").value;
+      return useDateFormat(dt, "DD. MM. YYYY (dddd)").value;
     case "short":
-      return useDateFormat(dt, "YYYY-MM-DD").value;
+      return useDateFormat(dt, "DD. MM. YYYY").value;
     case "human":
       // January 1st, 2021
-      return `${months[dt.getMonth()]} ${dt.getDate()}${ordinalIndicator(dt.getDate())}, ${dt.getFullYear()}`;
+      return `${dt.getDate()}. ${months[dt.getMonth()]} ${dt.getFullYear()}`;
     default:
       return "";
   }

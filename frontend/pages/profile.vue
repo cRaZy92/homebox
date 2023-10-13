@@ -25,7 +25,7 @@
   });
 
   const currencyExample = computed(() => {
-    const formatter = new Intl.NumberFormat("en-US", {
+    const formatter = new Intl.NumberFormat("sk-SK", {
       style: "currency",
       currency: currency.value ? currency.value.code : "USD",
     });

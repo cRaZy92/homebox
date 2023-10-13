@@ -25,7 +25,7 @@ export function validDate(dt: Date | string | null | undefined): boolean {
   return true;
 }
 
-export function fmtCurrency(value: number | string, currency = "USD", locale = "en-Us"): string {
+export function fmtCurrency(value: number | string, currency = "EUR", locale = "sk-SK"): string {
   if (typeof value === "string") {
     value = parseFloat(value);
   }
