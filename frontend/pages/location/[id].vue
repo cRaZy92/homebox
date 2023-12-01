@@ -118,7 +118,7 @@
     </BaseModal>
 
     <BaseContainer v-if="location">
-      <div class="bg-white rounded p-3">
+      <div class="bg-base-100 rounded p-3">
         <header class="mb-2">
           <div class="flex flex-wrap items-end gap-2">
             <div class="avatar placeholder mb-auto">
@@ -165,6 +165,13 @@
       </div>
       <section v-if="location && items">
         <ItemViewSelectable :items="items" />
+      </section>
+
+      <section v-if="location && location.children.length > 0" class="mt-6">
+        <BaseSectionHeader class="mb-5"> Child Locations </BaseSectionHeader>
+        <div class="grid gap-2 grid-cols-1 sm:grid-cols-3">
+          <LocationCard v-for="item in location.children" :key="item.id" :location="item" />
+        </div>
       </section>
     </BaseContainer>
   </div>
