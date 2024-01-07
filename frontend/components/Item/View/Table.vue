@@ -53,6 +53,12 @@
               <Icon v-if="d.insured" name="mdi-check" class="text-green-500 h-5 w-5" />
               <Icon v-else name="mdi-close" class="text-red-500 h-5 w-5" />
             </template>
+            <template v-else-if="cell(h) === 'cell-createdAt'">
+              <DateTime :date="d.createdAt" />
+            </template>
+            <template v-else-if="cell(h) === 'cell-updatedAt'">
+              <DateTime :date="d.updatedAt" />
+            </template>
             <slot v-else :name="cell(h)" v-bind="{ item: d }">
               {{ extractValue(d, h.value) }}
             </slot>
@@ -85,8 +91,9 @@
     return [
       { text: "Name", value: "name" },
       { text: "Quantity", value: "quantity", align: "center" },
-      { text: "Insured", value: "insured", align: "center" },
       { text: "Price", value: "purchasePrice" },
+      { text: "Last update at", value: "updatedAt" },
+      { text: "Created at", value: "createdAt" },
     ] as TableHeader[];
   });
 
