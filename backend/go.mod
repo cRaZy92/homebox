@@ -1,16 +1,16 @@
 module github.com/hay-kot/homebox/backend
 
-go 1.20
+go 1.21
 
 require (
 	ariga.io/atlas v0.15.0
 	entgo.io/ent v0.12.5
 	github.com/ardanlabs/conf/v3 v3.1.7
 	github.com/containrrr/shoutrrr v0.8.0
-	github.com/go-chi/chi/v5 v5.0.10
+	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/gocarina/gocsv v0.0.0-20231116093920-b87c2d0e983a
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/gorilla/schema v1.2.1
 	github.com/hay-kot/httpkit v0.0.5
 	github.com/mattn/go-sqlite3 v1.14.18
@@ -22,7 +22,7 @@ require (
 	github.com/swaggo/swag v1.16.2
 	github.com/yeqown/go-qrcode/v2 v2.2.2
 	github.com/yeqown/go-qrcode/writer/standard v1.2.2
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	modernc.org/sqlite v1.27.0
 )
 
