@@ -10,4 +10,9 @@ services:
         - COMMIT=head
         - BUILD_TIME=0001-01-01T00:00:00Z
     ports:
-      - 3100:7745
+      - 50050:7745
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Bratislava
+    volumes:
+      - /home/adamko/homebox-data/:/data
